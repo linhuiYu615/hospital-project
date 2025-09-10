@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.BannerMapper">
+
+    <!-- 定义基本列列表 -->
+    <sql id="Base_Column_List">
+        id, img_url
+    </sql>
+
+    <!-- 查询所有Banner信息 列出所有图片 -->
+    <select id="selectAll" resultType="com.example.pojo.entity.Banner">
+        SELECT
+        <include refid="Base_Column_List" /> <!-- 包含基本列列表 -->
+        FROM banner
+        <where>
+            <if test="id != null"> AND id = #{id}</if> <!-- 根据id筛选条件 -->
+            <if test="imgUrl != null"> AND img_url LIKE CONCAT('%', #{imgUrl}, '%')</if> <!-- 根据imgUrl模糊查询条件 -->
+        </where>
+        ORDER BY id DESC <!-- 按id降序排序 -->
+    </select>
+
+    <!-- 根据id查询Banner信息 -->
+    <select id="selectById" resultType="com.example.pojo.entity.Banner">
+        SELECT
+        <include refid="Base_Column_List" /> <!-- 包含基本列列表 -->
+        FROM banner
+        WHERE id = #{id} <!-- 根据id查询条件 -->
+    </select>
+
+    <!-- 根据id删除Banner信息 -->
+    <delete id="deleteById">
+        DELETE FROM banner
+        WHERE id = #{id} <!-- 根据id删除记录 -->
+    </delete>
+
+    <!-- 插入Banner信息 -->
+    <insert id="insert" parameterType="com.example.pojo.entity.Banner" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO banner
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if> <!-- 插入id字段 -->
+            <if test="imgUrl != null">img_url,</if> <!-- 插入imgUrl字段 -->
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if> <!-- 插入id值 -->
+            <if test="imgUrl != null">#{imgUrl},</if> <!-- 插入imgUrl值 -->
+        </trim>
+    </insert>
+
+    <!-- 更新Banner信息 -->
+    <update id="updateById" parameterType="com.example.pojo.entity.Banner">
+        UPDATE banner
+        <set>
+            <if test="imgUrl != null">
+                img_url = #{imgUrl}, <!-- 更新imgUrl字段 -->
+            </if>
+        </set>
+        WHERE id = #{id} <!-- 根据id更新记录 -->
+    </update>
+
+</mapper>
